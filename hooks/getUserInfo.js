@@ -9,7 +9,7 @@ const useUserInfo = () => {
   function getUserInfo() {
     //////////////////////////////////////////
     if (sessionStatus === 'loading') return
-    fetch(`/api/users?id=${session.user.id}`)
+    fetch(`/api/users?id=${session?.user.id}`)
       .then((res) => res.json())
       .then((res) => {
         setUserInfo(res)
