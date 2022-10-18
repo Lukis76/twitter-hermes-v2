@@ -10,11 +10,19 @@ export default async function handler(req, res) {
   const session = await unstable_getServerSession(req, res, authOptions)
   //////////////////////////////////////////////////////////////////////
   if (req.method === 'GET') {
-    const posts = await Post.find()
-      .populate('author')
-      .sort({ createdAt: -1 })
-      .exec()
-    res.json(posts)
+    const { id } = req.query
+    if (id) {
+      const post = await Post.findById(id)
+      console.log("🚀 ~ file: posts.js ~ line 16 ~ handler ~ post", post)
+      res.json({post})
+    } else {
+      const posts = await Post.find()
+        .populate('author')
+        .sort({ createdAt: -1 })
+        .exec()
+      ///////////////
+      res.json(posts)
+    }
   }
   /////////////////////////////
   if (req.method === 'POST') {
