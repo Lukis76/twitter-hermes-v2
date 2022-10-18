@@ -1,9 +1,24 @@
+import { useEffect, useState } from 'react'
+import PostForm from '../components/postForm'
 import UserNameForm from '../components/userNameForm'
 import useUserInfo from '../hooks/getUserInfo'
+import axios from 'axios'
+import ContentPost from '../components/contentPost'
 //
 const Home = () => {
   /*--------------------------------------------- */
   const { userInfo, status } = useUserInfo()
+  const [posts, setPosts] = useState([])
+  //////////////////////////////////////////////
+  const fetchPosts = () => {
+    fetch('api/posts')
+      .then((res) => res.json())
+      .then((res) => setPosts(res))
+  }
+  //////////////////
+  useEffect(() => {
+    fetchPosts()
+  }, [])
   //////////////////////////////////////////////
   if (status === 'loading') {
     return 'loading user info'
@@ -13,29 +28,21 @@ const Home = () => {
     return <UserNameForm />
   }
   /*--------------------------------------------- */
+  console.log('holis por aca estamos => ', posts)
   /*--------------------------------------------- */
   return (
     <div className='max-w-xl mx-auto border-l border-r border-slate-700 min-h-screen'>
       <h1 className='text-xl font-bold text-white p-4'>Home</h1>
-      <form className='mx-5'>
-        <div className='flex'>
-          <div>
-            <div className='rounded-full overflow-hidden w-12'>
-              <img src={userInfo.user.image} alt='avatar' />
+      <PostForm onPost={() => fetchPosts()} />
+      <div className='text-white'>
+        All Posts :{' '}
+        {posts.length &&
+          posts.map((el) => (
+            <div key={el._id} className='border-t border-gray-70 p-5'>
+              <ContentPost {...el} />
             </div>
-          </div>
-          <div className='grow pl-4'>
-            <textarea
-              className='w-full p-2 bg-transparent text-yellow-50'
-              placeholder={"What's happening?"}
-            />
-            <div className='text-right'>
-
-            <button className='bg-blue-600 text-white px-5 py-0.5 rounded-full font-semibold' >hiss</button>
-            </div>
-          </div>
-        </div>
-      </form>
+          ))}
+      </div>
     </div>
   )
   /*--------------------------------------------- */

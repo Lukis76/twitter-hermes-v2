@@ -1,17 +1,17 @@
-import { getProviders, signIn,useSession } from 'next-auth/react'
+import { getProviders, signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 //
 //
 export default function Login({ providers }) {
   /*--------------------------------------------- */
-  const {data: session, status} = useSession()
+  const { data: session, status } = useSession()
   const router = useRouter()
   //////////////////////////
-  console.log('=> ', session, status);
+  console.log('=> ', session, status)
   if (status === 'loading') {
     return ''
   }
-  if(session) {
+  if (session) {
     router.push('/')
   }
   /////////////////////////////////////////
@@ -23,7 +23,7 @@ export default function Login({ providers }) {
         {Object.values(providers).map((el, index) => (
           <div key={index}>
             <button
-            className='bg-light px-5 py-2 m-2 text-black rounded-lg font-bold'
+              className='bg-light px-5 py-2 m-2 text-black rounded-lg font-bold'
               onClick={async () => {
                 await signIn(el.id)
               }}

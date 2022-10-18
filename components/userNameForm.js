@@ -12,7 +12,7 @@ const UserNameForm = () => {
     if (status === 'loading') return
     if (userName === '') {
       const defaultUserName = userInfo?.user?.email?.split('@')[0]
-      setUserName(defaultUserName.replace(/[^a-z]+/gi, ''))
+      setUserName(defaultUserName?.replace(/[^a-z]+/gi, '') || userInfo?.user?.name )
     }
   }, [status])
   /////////////////////////////
