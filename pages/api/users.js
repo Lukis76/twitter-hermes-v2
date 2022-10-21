@@ -11,7 +11,7 @@ export default async function handle(req, res) {
   if (req.method === 'PUT') {
     const {userName} = req.body
 
-    await User.findByIdAndUpdate(session.user.id, {
+    await User.findByIdAndUpdate(session?.user?.id, {
       username: userName
     })
   res.json('ok')

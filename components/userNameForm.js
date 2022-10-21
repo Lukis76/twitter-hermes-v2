@@ -11,8 +11,8 @@ const UserNameForm = () => {
   useEffect(() => {
     if (status === 'loading') return
     if (userName === '') {
-      const defaultUserName = userInfo?.user?.email?.split('@')[0]
-      setUserName(defaultUserName?.replace(/[^a-z]+/gi, '') || userInfo?.user?.name) // ?.replace( /\s+/g, '-')
+      const defaultUserName = userInfo?.email?.split('@')[0]
+      setUserName(defaultUserName?.replace(/[^a-z]+/gi, '')) // || userInfo?.name
     }
   }, [status])
   /////////////////////////////
@@ -21,7 +21,7 @@ const UserNameForm = () => {
     await fetch('api/users', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({userName})
+      body: JSON.stringify({ userName }),
     })
     router.reload()
   }
@@ -35,7 +35,7 @@ const UserNameForm = () => {
         <h1 className='text-xl text-white mb-2'>insert username</h1>
         <input
           onChange={(e) => setUserName(e.target.value)}
-          className=' block mb-1 px-3 py-1 rounded-lg'
+          className=' block mb-1 px-3 py-1 rounded-lg text-black'
           placeholder='userName'
           value={userName}
           type='text'

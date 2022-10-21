@@ -2,18 +2,31 @@ import { useEffect, useState } from 'react'
 import PostForm from '../components/postForm'
 import UserNameForm from '../components/userNameForm'
 import useUserInfo from '../hooks/getUserInfo'
-import axios from 'axios'
 import ContentPost from '../components/contentPost'
+import Layout from '../components/layout'
+import { signOut, useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
 //
 const Home = () => {
   /*--------------------------------------------- */
-  const { userInfo, status } = useUserInfo()
+  const { data: session } = useSession()
+  const { userInfo, setUserInfo, status } = useUserInfo()
   const [posts, setPosts] = useState([])
+  const [idMeLiked, setIdMeliked] = useState([])
+  const router = useRouter()
   //////////////////////////////////////////////
   const fetchPosts = () => {
-    fetch('api/posts')
+    fetch('/api/posts')
       .then((res) => res.json())
-      .then((res) => setPosts(res))
+      .then((res) => {
+        setPosts(res.posts)
+        setIdMeliked(res.idMeLiked)
+      })
+  }
+  //////////////////////////////////////////////
+  const logout = async () => {
+    setUserInfo(null)
+    await signOut()
   }
   //////////////////
   useEffect(() => {
@@ -24,26 +37,38 @@ const Home = () => {
     return 'loading user info'
   }
   ///////////////////////////////
-  if (!userInfo.user.username) {
-    return <UserNameForm />
+  if (userInfo && !userInfo?.username) {
+    return <UserNameForm></UserNameForm>
+  }
+  if (!userInfo) {
+    router.push('/login')
+    return 'no user info'
   }
   /*--------------------------------------------- */
-  console.log('holis por aca estamos => ', posts)
   /*--------------------------------------------- */
   return (
-    <div className='max-w-xl mx-auto border-l border-r border-slate-700 min-h-screen'>
+    <Layout>
       <h1 className='text-xl font-bold text-white p-4'>Home</h1>
-      <PostForm onPost={() => fetchPosts()} />
+      <PostForm onPost={fetchPosts} />
       <div className='text-white'>
-        All Posts :{' '}
         {posts.length &&
           posts.map((el) => (
             <div key={el._id} className='border-t border-gray-70 p-5'>
-              <ContentPost {...el} />
+              <ContentPost {...el} meLiked={idMeLiked.includes(el._id)} />
             </div>
           ))}
       </div>
-    </div>
+      {userInfo && (
+        <div className='p-5 text-center border-0'>
+          <button
+            onClick={logout}
+            className='bg-zinc-300 text-black px-5 py-1 rounded-full'
+          >
+            Logout
+          </button>
+        </div>
+      )}
+    </Layout>
   )
   /*--------------------------------------------- */
 }

@@ -3,17 +3,23 @@ import { useSession } from 'next-auth/react'
 const useUserInfo = () => {
   ////////////////////////////
   const { data: session, status: sessionStatus } = useSession()
-  const [userInfo, setUserInfo] = useState()
+  const [userInfo, setUserInfo] = useState(null)
   const [status, setStatus] = useState('loading')
   //////////////////////////////////////////////////////
   function getUserInfo() {
-    //////////////////////////////////////////
+    ////////////////////////////////////////
     if (sessionStatus === 'loading') return
-    fetch(`/api/users?id=${session?.user.id}`)
+    ///////////////////////////////////////
+    if (!session?.user?.id) {
+      setStatus('authenticated')
+      return
+    }
+    ///////////////////////////////////////////
+    fetch(`/api/users?id=${session?.user?.id}`)
       .then((res) => res.json())
       .then((res) => {
-        setUserInfo(res)
-        setStatus('done')
+        setUserInfo(res?.user)
+        setStatus('authenticated')
       })
   }
   //////////////////
@@ -21,7 +27,7 @@ const useUserInfo = () => {
     getUserInfo()
   }, [sessionStatus])
   /////////////////////////////
-  return { userInfo, status }
+  return { userInfo, setUserInfo, status }
 }
 
 export default useUserInfo

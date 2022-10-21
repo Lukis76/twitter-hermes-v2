@@ -24,7 +24,7 @@ const handleSubmit = async (e) => {
     <form className='mx-5' onSubmit={handleSubmit}>
       <div className='flex'>
         <div>
-          <Avatar img={userInfo.user.image} />
+          <Avatar img={userInfo?.image} />
         </div>
         <div className='grow pl-4'>
           <textarea
